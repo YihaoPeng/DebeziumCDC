@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wyb</groupId>
-    <artifactId>DebeziumCDC</artifactId>
-    <version>0.1.0</version>
+    <groupId>com.btc</groupId>
+    <artifactId>btcpool-flink-helper</artifactId>
+    <version>0.1.4</version>
 
 
     <properties>
-        <flink.version>1.11</flink.version>
-        <scala.version>2.11</scala.version>
+        <flink.version>1.11.1</flink.version>
+        <scala.version>2.12</scala.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>
             UTF-8
@@ -22,20 +20,14 @@
 
     <dependencies>
 
-        <!--protobuf-deserializer-->
+        <!-- Table ecosystem -->
         <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>chill-protobuf</artifactId>
-            <version>0.7.6</version>
-            <!-- exclusions for dependency conversion -->
-            <exclusions>
-                <exclusion>
-                    <groupId>com.esotericsoftware.kryo</groupId>
-                    <artifactId>kryo</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-java-bridge_${scala.version}</artifactId>
+            <version>${flink.version}</version>
         </dependency>
-        <!-- We need protobuf for chill-protobuf -->
+
+        <!--protobuf-deserializer-->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
@@ -68,9 +60,14 @@
                         <configuration>
                             <transformers combine.children="append">
                                 <!-- The service transformer is needed to merge META-INF/services files -->
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                                 <!-- ... -->
                             </transformers>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.google.protobuf:*</include>
+                                </includes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
